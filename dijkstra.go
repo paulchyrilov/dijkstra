@@ -41,9 +41,9 @@ func (g *Graph) setup(shortest bool, src int, list int) {
 		g.setDefaults(int64(math.MinInt64)+2)
 		g.best = int64(math.MinInt64)
 	}
-	//Set the Distance of initial vertex 0
+	//Set the Distance of initial Vertex 0
 	g.Verticies[src].Distance = 0
-	//Add the source vertex to the list
+	//Add the source Vertex to the list
 	g.visiting.PushOrdered(&g.Verticies[src])
 }
 
@@ -132,22 +132,22 @@ func (g *Graph) postSetupEvaluate(src, dest int, shortest bool) (BestPath, error
 			continue
 		}
 		for v, destination := range current.destinations {
-			for _, arc := range destination.arcs {
-				//If the arcs has better access, than the current best, update the Vertex being touched
-				if (shortest && current.Distance+arc.distance < g.Verticies[v].Distance) ||
-					(!shortest && current.Distance+arc.distance > g.Verticies[v].Distance) {
+			for _, arc := range destination.Arcs {
+				//If the Arcs has better access, than the current best, update the Vertex being touched
+				if (shortest && current.Distance+arc.Distance < g.Verticies[v].Distance) ||
+					(!shortest && current.Distance+arc.Distance > g.Verticies[v].Distance) {
 					//if g.Verticies[v].bestVertex == current.ID && g.Verticies[v].ID != dest {
 					if current.bestVertex.ID == v && g.Verticies[v].ID != dest {
 						//also only do this if we aren't checkout out the best Distance again
 						//This seems familiar 8^)
 						return BestPath{}, newErrLoop(current.ID, v)
 					}
-					g.Verticies[v].Distance = current.Distance + arc.distance
+					g.Verticies[v].Distance = current.Distance + arc.Distance
 					g.Verticies[v].bestVertex = current
 					if v == dest {
 						//If this is the destination update best, so we caInfinite loop detectedn stop looking at
 						// useless Verticies
-						g.best = current.Distance + arc.distance
+						g.best = current.Distance + arc.Distance
 					}
 					//Push this updated Vertex into the list to be evaluated, pushes in
 					// sorted form

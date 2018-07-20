@@ -82,7 +82,7 @@ func Import(filename string) (g Graph, err error) {
 					return
 				}
 			}
-			g.Verticies[i].destinations[arc].arcs[len(g.Verticies[i].destinations[arc].arcs)] = Arc{distance:dist, attributes:nil}
+			g.Verticies[i].destinations[arc].Arcs[len(g.Verticies[i].destinations[arc].Arcs)] = Arc{Distance:dist, Attributes:nil}
 		}
 	}
 	err = g.validate()

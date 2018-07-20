@@ -24,7 +24,7 @@ func NewGraph() *Graph {
 	return new
 }
 
-//AddNewVertex adds a new vertex at the next available index
+//AddNewVertex adds a new Vertex at the next available index
 func (g *Graph) AddNewVertex() *Vertex {
 	for i, v := range g.Verticies {
 		if i != v.ID {
@@ -35,7 +35,7 @@ func (g *Graph) AddNewVertex() *Vertex {
 	return g.AddVertex(len(g.Verticies))
 }
 
-//AddVertex adds a single vertex
+//AddVertex adds a single Vertex
 func (g *Graph) AddVertex(ID int) *Vertex {
 	g.AddVerticies(Vertex{ID: ID})
 	return &g.Verticies[ID]
@@ -46,9 +46,20 @@ func (g *Graph) AddNamedVertex(ID int, name string) *Vertex {
 	return &g.Verticies[ID]
 }
 
-//GetVertex gets the reference of the specified vertex. An error is thrown if
-// there is no vertex with that index/ID.
+//GetVertex gets the reference of the specified Vertex. An error is thrown if
+// there is no Vertex with that index/ID.
 func (g *Graph) GetVertex(ID int) (*Vertex, error) {
+	if ID >= len(g.Verticies) {
+		return nil, errors.New("Vertex not found")
+	}
+	return &g.Verticies[ID], nil
+}
+
+func (g *Graph) GetMappedVertex(name string) (*Vertex, error) {
+	var ID, err = g.GetMapping(name)
+	if ID < 0 {
+		return nil, err
+	}
 	if ID >= len(g.Verticies) {
 		return nil, errors.New("Vertex not found")
 	}
@@ -59,7 +70,7 @@ func (g Graph) validate() error {
 	for _, v := range g.Verticies {
 		for a := range v.destinations {
 			if a >= len(g.Verticies) || (g.Verticies[a].ID == 0 && a != 0) {
-				return errors.New(fmt.Sprint("Graph validation error;", "Vertex ", a, " referenced in arcs by Vertex ", v.ID))
+				return errors.New(fmt.Sprint("Graph validation error;", "Vertex ", a, " referenced in Arcs by Vertex ", v.ID))
 			}
 		}
 	}

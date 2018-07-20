@@ -12,7 +12,7 @@ func TestGetVertex(t *testing.T) {
 	g := NewGraph()
 	g.AddVertex(99)
 	if v, _ := g.GetVertex(99); v.ID != 99 {
-		t.Error("Getting vertex failed (99)")
+		t.Error("Getting Vertex failed (99)")
 	}
 	if _, err := g.GetVertex(100); err == nil {
 		t.Error("Vertex should not be found (100)")
@@ -30,14 +30,14 @@ func TestAddVertex(t *testing.T) {
 	}
 	v := g.AddNewVertex()
 	if v.ID != 11 {
-		t.Error("Adding self assigned vertex fail")
+		t.Error("Adding self assigned Vertex fail")
 	}
 	g = NewGraph()
 	for i := 0; i <= 10; i++ {
 		g.AddNewVertex()
 	}
 	if v = g.AddNewVertex(); v.ID != 11 {
-		t.Error("Adding self assigned vertex fail when extending slice")
+		t.Error("Adding self assigned Vertex fail when extending slice")
 	}
 
 }

@@ -46,10 +46,28 @@ func (g *Graph) AddMappedVertex(ID string) int {
 	return g.AddNamedVertex(i, ID).ID
 }
 
+func (g *Graph) HasMappedVertex(Vertex string) bool {
+	_, ok := g.mapping[Vertex]
+	return ok
+}
+
 //AddMappedArc adds a new Arc from Source to Destination, for when verticies are
 // referenced by strings.
 func (g *Graph) AddMappedArc(Source, Destination string, Distance int64) error {
 	return g.AddArc(g.AddMappedVertex(Source), g.AddMappedVertex(Destination), Distance)
+}
+
+func (g *Graph) HasMappedArc(Source, Destination string) bool {
+	sourceId, ok := g.mapping[Source]
+	if(!ok) {
+		return ok;
+	}
+	destinationId, ok := g.mapping[Destination]
+	if(!ok) {
+		return ok;
+	}
+	_, ok = g.Verticies[sourceId].destinations[destinationId]
+	return ok
 }
 
 //AddArc is the default method for adding an arc from a Source Vertex to a

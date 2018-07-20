@@ -41,9 +41,9 @@ func TestMapping(t *testing.T) {
 		t.Error("AddMappedArc was failed when valid")
 	}
 	if err := g.AddArc(0, 99, 1); err == nil {
-		t.Error("AddArc didn't fail when referencing non existant vertex (destination)")
+		t.Error("AddArc didn't fail when referencing non existant Vertex (destination)")
 	}
 	if err := g.AddArc(99, 0, 1); err == nil {
-		t.Error("AddArc didn't fail when referencing non existant vertex (source)")
+		t.Error("AddArc didn't fail when referencing non existant Vertex (source)")
 	}
 }

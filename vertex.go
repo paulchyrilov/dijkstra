@@ -14,16 +14,16 @@ type Vertex struct {
 }
 
 type Destinations struct {
-	vertex *Vertex
-	arcs map[int]Arc
+	Vertex *Vertex
+	Arcs   map[int]Arc
 }
 
 type Arc struct {
-	distance   int64
-	attributes interface{}
+	Distance   int64
+	Attributes interface{}
 }
 
-//NewVertex creates a new vertex
+//NewVertex creates a new Vertex
 func NewVertex(ID int) *Vertex {
 	return &Vertex{ID: ID, destinations: map[int]Destinations{}}
 }
@@ -40,7 +40,7 @@ func (g *Graph) AddVerticies(verticies ...Vertex) {
 	}
 }
 
-//AddArc adds an arc to the vertex, it's up to the user to make sure this is used
+//AddArc adds an arc to the Vertex, it's up to the user to make sure this is used
 // correctly, firstly ensuring to use before adding to graph, or to use referenced
 // of the Vertex instead of a copy. Secondly, to ensure the destination is a valid
 // Vertex in the graph. Note that AddArc will overwrite any existing Distance set
@@ -51,10 +51,10 @@ func (v *Vertex) AddArc(destinationVertex *Vertex, Distance int64) {
 	}
 
 	if destination, ok := v.destinations[destinationVertex.ID]; ok {
-		destination.arcs[len(destination.arcs)] = Arc{distance:Distance, attributes:nil}
+		destination.Arcs[len(destination.Arcs)] = Arc{Distance:Distance, Attributes:nil}
 	} else {
-		newDestination := Destinations{vertex: destinationVertex, arcs : map[int]Arc{}}
-		newDestination.arcs[len(newDestination.arcs)] = Arc{distance:Distance, attributes:nil}
+		newDestination := Destinations{Vertex: destinationVertex, Arcs: map[int]Arc{}}
+		newDestination.Arcs[len(newDestination.Arcs)] = Arc{Distance:Distance, Attributes:nil}
 		v.destinations[destinationVertex.ID] = newDestination
 	}
 }
@@ -64,7 +64,7 @@ I decided you don't get that kind of privelage
 #checkyourprivelage
 //RemoveArc completely removes the arc to Destination (if it exists)
 func (v *Vertex) RemoveArc(Destination int) {
-	delete(v.arcs, Destination)
+	delete(v.Arcs, Destination)
 }*/
 
 //GetArc gets the specified arc to Destination, bool is false if no arc found
