@@ -41,6 +41,11 @@ func (g *Graph) AddVertex(ID int) *Vertex {
 	return &g.Verticies[ID]
 }
 
+func (g *Graph) AddNamedVertex(ID int, name string) *Vertex {
+	g.AddVerticies(Vertex{ID: ID, Name:name})
+	return &g.Verticies[ID]
+}
+
 //GetVertex gets the reference of the specified vertex. An error is thrown if
 // there is no vertex with that index/ID.
 func (g *Graph) GetVertex(ID int) (*Vertex, error) {
@@ -52,7 +57,7 @@ func (g *Graph) GetVertex(ID int) (*Vertex, error) {
 
 func (g Graph) validate() error {
 	for _, v := range g.Verticies {
-		for a := range v.arcs {
+		for a := range v.destinations {
 			if a >= len(g.Verticies) || (g.Verticies[a].ID == 0 && a != 0) {
 				return errors.New(fmt.Sprint("Graph validation error;", "Vertex ", a, " referenced in arcs by Vertex ", v.ID))
 			}
@@ -61,10 +66,11 @@ func (g Graph) validate() error {
 	return nil
 }
 
-//SetDefaults sets the distance and best node to that specified
-func (g *Graph) setDefaults(Distance int64, BestNode int) {
+//SetDefaults sets the Distance and best node to that specified
+func (g *Graph) setDefaults(Distance int64) {
+	var defaultVertex = Vertex{ID: -1}
 	for i := range g.Verticies {
-		g.Verticies[i].bestVertex = BestNode
-		g.Verticies[i].distance = Distance
+		g.Verticies[i].bestVertex = &defaultVertex
+		g.Verticies[i].Distance = Distance
 	}
 }

@@ -43,7 +43,7 @@ func (g *Graph) AddMappedVertex(ID string) int {
 	i := g.highestMapIndex
 	g.highestMapIndex++
 	g.mapping[ID] = i
-	return g.AddVertex(i).ID
+	return g.AddNamedVertex(i, ID).ID
 }
 
 //AddMappedArc adds a new Arc from Source to Destination, for when verticies are
@@ -58,6 +58,6 @@ func (g *Graph) AddArc(Source, Destination int, Distance int64) error {
 	if len(g.Verticies) <= Source || len(g.Verticies) <= Destination {
 		return errors.New("Source/Destination not found")
 	}
-	g.Verticies[Source].AddArc(Destination, Distance)
+	g.Verticies[Source].AddArc(&g.Verticies[Destination], Distance)
 	return nil
 }

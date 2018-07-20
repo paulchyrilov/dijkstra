@@ -301,7 +301,7 @@ func testResults(t *testing.T, got, best BestPath, shortest bool, filename strin
 		distmethod = "Longest"
 	}
 	if got.Distance != best.Distance {
-		t.Error(distmethod, " distance incorrect\n", filename, "\ngot: ", got.Distance, "\nwant: ", best.Distance)
+		t.Error(distmethod, " Distance incorrect\n", filename, "\ngot: ", got.Distance, "\nwant: ", best.Distance)
 	}
 	if !reflect.DeepEqual(got.Path, best.Path) {
 		t.Error(distmethod, " path incorrect\n\n", filename, "got: ", got.Path, "\nwant: ", best.Path)

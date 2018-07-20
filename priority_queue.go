@@ -41,12 +41,12 @@ type priorityQueueWrapper struct{ priorityQueueInterface }
 
 func (pq priorityQueueShort) Less(i, j int) bool {
 	// We want Pop to give us the highest, not lowest, priority so we use greater than here.
-	return pq.priorityQueueBase[i].value.distance > pq.priorityQueueBase[j].value.distance
+	return pq.priorityQueueBase[i].value.Distance > pq.priorityQueueBase[j].value.Distance
 }
 
 func (pq priorityQueueLong) Less(i, j int) bool {
 	// We want Pop to give us the highest, not lowest, priority so we use greater than here.
-	return pq.priorityQueueBase[i].value.distance < pq.priorityQueueBase[j].value.distance
+	return pq.priorityQueueBase[i].value.Distance < pq.priorityQueueBase[j].value.Distance
 }
 
 // An Item is something we manage in a priority queue.

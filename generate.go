@@ -13,7 +13,13 @@ func Generate(nodes int) Graph {
 			if j == i {
 				continue
 			}
-			v.AddArc(j, int64(2*nodes-j)+rand.Int63n(int64(nodes)*int64(nodes-j+1)))
+			var vertex, err = graph.GetVertex(j)
+			if nil != err {
+				vertex := NewVertex(j)
+				v.AddArc(vertex, int64(2*nodes-j)+rand.Int63n(int64(nodes)*int64(nodes-j+1)))
+			} else {
+				v.AddArc(vertex, int64(2*nodes-j)+rand.Int63n(int64(nodes)*int64(nodes-j+1)))
+			}
 		}
 		graph.AddVerticies(*v)
 	}

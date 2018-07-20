@@ -35,14 +35,14 @@ func (g *Graph) setup(shortest bool, src int, list int) {
 	// and set the defaults *almost* as bad
 	// set all best verticies to -1 (unused)
 	if shortest {
-		g.setDefaults(int64(math.MaxInt64)-2, -1)
+		g.setDefaults(int64(math.MaxInt64)-2)
 		g.best = int64(math.MaxInt64)
 	} else {
-		g.setDefaults(int64(math.MinInt64)+2, -1)
+		g.setDefaults(int64(math.MinInt64)+2)
 		g.best = int64(math.MinInt64)
 	}
-	//Set the distance of initial vertex 0
-	g.Verticies[src].distance = 0
+	//Set the Distance of initial vertex 0
+	g.Verticies[src].Distance = 0
 	//Add the source vertex to the list
 	g.visiting.PushOrdered(&g.Verticies[src])
 }
@@ -87,15 +87,15 @@ func (g *Graph) forceList(i int) {
 }
 
 func (g *Graph) bestPath(src, dest int) BestPath {
-	var path []int
-	for c := g.Verticies[dest]; c.ID != src; c = g.Verticies[c.bestVertex] {
-		path = append(path, c.ID)
+	var path []Vertex
+	for c := g.Verticies[dest]; c.ID != src; c = g.Verticies[c.bestVertex.ID] {
+		path = append(path, c)
 	}
-	path = append(path, src)
+	path = append(path, g.Verticies[src])
 	for i, j := 0, len(path)-1; i < j; i, j = i+1, j-1 {
 		path[i], path[j] = path[j], path[i]
 	}
-	return BestPath{g.Verticies[dest].distance, path}
+	return BestPath{g.Verticies[dest].Distance, path}
 }
 
 func (g *Graph) evaluate(src, dest int, shortest bool) (BestPath, error) {
@@ -122,35 +122,37 @@ func (g *Graph) postSetupEvaluate(src, dest int, shortest bool) (BestPath, error
 				current = heap.Pop(g.visiting).(*Vertex)
 			}*/
 		//If we have hit the destination set the flag, cheaper than checking it's
-		// distance change at the end
+		// Distance change at the end
 		if current.ID == dest {
 			g.visitedDest = true
 			continue
 		}
-		//If the current distance is already worse than the best try another Vertex
-		if shortest && current.distance >= g.best { //} || (!shortest && current.distance <= g.best) {
+		//If the current Distance is already worse than the best try another Vertex
+		if shortest && current.Distance >= g.best { //} || (!shortest && current.Distance <= g.best) {
 			continue
 		}
-		for v, dist := range current.arcs {
-			//If the arc has better access, than the current best, update the Vertex being touched
-			if (shortest && current.distance+dist < g.Verticies[v].distance) ||
-				(!shortest && current.distance+dist > g.Verticies[v].distance) {
-				//if g.Verticies[v].bestVertex == current.ID && g.Verticies[v].ID != dest {
-				if current.bestVertex == v && g.Verticies[v].ID != dest {
-					//also only do this if we aren't checkout out the best distance again
-					//This seems familiar 8^)
-					return BestPath{}, newErrLoop(current.ID, v)
+		for v, destination := range current.destinations {
+			for _, arc := range destination.arcs {
+				//If the arcs has better access, than the current best, update the Vertex being touched
+				if (shortest && current.Distance+arc.distance < g.Verticies[v].Distance) ||
+					(!shortest && current.Distance+arc.distance > g.Verticies[v].Distance) {
+					//if g.Verticies[v].bestVertex == current.ID && g.Verticies[v].ID != dest {
+					if current.bestVertex.ID == v && g.Verticies[v].ID != dest {
+						//also only do this if we aren't checkout out the best Distance again
+						//This seems familiar 8^)
+						return BestPath{}, newErrLoop(current.ID, v)
+					}
+					g.Verticies[v].Distance = current.Distance + arc.distance
+					g.Verticies[v].bestVertex = current
+					if v == dest {
+						//If this is the destination update best, so we caInfinite loop detectedn stop looking at
+						// useless Verticies
+						g.best = current.Distance + arc.distance
+					}
+					//Push this updated Vertex into the list to be evaluated, pushes in
+					// sorted form
+					g.visiting.PushOrdered(&g.Verticies[v])
 				}
-				g.Verticies[v].distance = current.distance + dist
-				g.Verticies[v].bestVertex = current.ID
-				if v == dest {
-					//If this is the destination update best, so we can stop looking at
-					// useless Verticies
-					g.best = current.distance + dist
-				}
-				//Push this updated Vertex into the list to be evaluated, pushes in
-				// sorted form
-				g.visiting.PushOrdered(&g.Verticies[v])
 			}
 		}
 	}
@@ -160,5 +162,5 @@ func (g *Graph) postSetupEvaluate(src, dest int, shortest bool) (BestPath, error
 //BestPath contains the solution of the most optimal path
 type BestPath struct {
 	Distance int64
-	Path     []int
+	Path     []Vertex
 }

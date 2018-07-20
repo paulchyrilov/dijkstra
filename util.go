@@ -50,7 +50,7 @@ func Import(filename string) (g Graph, err error) {
 			g.Verticies = append(g.Verticies, make([]Vertex, 1+i-len(g.Verticies))...)
 			for ; temp < len(g.Verticies); temp++ {
 				g.Verticies[temp].ID = temp
-				g.Verticies[temp].arcs = map[int]int64{}
+				g.Verticies[temp].destinations = map[int]Destinations{}
 			}
 		}
 		if len(f) == 1 {
@@ -82,7 +82,7 @@ func Import(filename string) (g Graph, err error) {
 					return
 				}
 			}
-			g.Verticies[i].arcs[arc] = dist
+			g.Verticies[i].destinations[arc].arcs[len(g.Verticies[i].destinations[arc].arcs)] = Arc{distance:dist, attributes:nil}
 		}
 	}
 	err = g.validate()
@@ -112,7 +112,7 @@ func (g Graph) ExportToFile(filename string) error {
 		} else {
 			fmt.Fprint(f, v.ID)
 		}
-		for key, val := range v.arcs {
+		for key, val := range v.destinations {
 			if g.usingMap {
 				if i, err = g.GetMapped(key); err != nil {
 					return errors.New("Mapping fail when exporting; " + err.Error())
