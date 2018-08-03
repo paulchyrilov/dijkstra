@@ -144,6 +144,7 @@ func (g *Graph) postSetupEvaluate(src, dest int, shortest bool) (BestPath, error
 					}
 					g.Verticies[v].Distance = current.Distance + arc.Distance
 					g.Verticies[v].bestVertex = current
+					g.Verticies[v].bestArc = &arc
 					if v == dest {
 						//If this is the destination update best, so we caInfinite loop detectedn stop looking at
 						// useless Verticies

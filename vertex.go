@@ -1,5 +1,7 @@
 package dijkstra
 
+import "sort"
+
 //Vertex is a single node in the network, contains it's ID, best Distance (to
 // itself from the src) and the weight to go to each other connected node (Vertex)
 type Vertex struct {
@@ -9,11 +11,12 @@ type Vertex struct {
 	//Best Distance to the Vertex
 	Distance   int64
 	bestVertex *Vertex
+	bestArc *Arc
 	//A set of all weights to the nodes in the map
-	destinations map[int]Destinations
+	destinations map[int]Destination
 }
 
-type Destinations struct {
+type Destination struct {
 	Vertex *Vertex
 	Arcs   map[int]Arc
 }
@@ -25,7 +28,7 @@ type Arc struct {
 
 //NewVertex creates a new Vertex
 func NewVertex(ID int) *Vertex {
-	return &Vertex{ID: ID, destinations: map[int]Destinations{}}
+	return &Vertex{ID: ID, destinations: map[int]Destination{}}
 }
 
 //AddVerticies adds the listed verticies to the graph, overwrites any existing
@@ -45,16 +48,19 @@ func (g *Graph) AddVerticies(verticies ...Vertex) {
 // of the Vertex instead of a copy. Secondly, to ensure the destination is a valid
 // Vertex in the graph. Note that AddArc will overwrite any existing Distance set
 // if there is already an arc set to Destination.
-func (v *Vertex) AddArc(destinationVertex *Vertex, Distance int64) {
+func (v *Vertex) AddArc(destinationVertex *Vertex, Distance int64, attributes interface{}) {
 	if v.destinations == nil {
-		v.destinations = map[int]Destinations{}
+		v.destinations = map[int]Destination{}
 	}
 
 	if destination, ok := v.destinations[destinationVertex.ID]; ok {
-		destination.Arcs[len(destination.Arcs)] = Arc{Distance:Distance, Attributes:nil}
+		destination.Arcs[len(destination.Arcs)] = Arc{Distance:Distance, Attributes:attributes}
+		sort.Slice(destination.Arcs, func(i, j int) bool {
+			return destination.Arcs[i].Distance > destination.Arcs[j].Distance
+		})
 	} else {
-		newDestination := Destinations{Vertex: destinationVertex, Arcs: map[int]Arc{}}
-		newDestination.Arcs[len(newDestination.Arcs)] = Arc{Distance:Distance, Attributes:nil}
+		newDestination := Destination{Vertex: destinationVertex, Arcs: map[int]Arc{}}
+		newDestination.Arcs[len(newDestination.Arcs)] = Arc{Distance:Distance, Attributes:attributes}
 		v.destinations[destinationVertex.ID] = newDestination
 	}
 }
@@ -67,12 +73,22 @@ func (v *Vertex) RemoveArc(Destination int) {
 	delete(v.Arcs, Destination)
 }*/
 
-//GetArc gets the specified arc to Destination, bool is false if no arc found
-func (v *Vertex) GetArc(Destination int) (destinations Destinations, ok bool) {
+//GetDestination gets the specified arc to Destination, bool is false if no arc found
+func (v *Vertex) GetDestination(DestinationId int) (destinations Destination, ok bool) {
 	if v.destinations == nil {
-		return Destinations{}, false
+		return Destination{}, false
 	}
 	//idk why but doesn't work on one line?
-	destinations, ok = v.destinations[Destination]
+	destinations, ok = v.destinations[DestinationId]
+	return
+}
+
+//GetDestination gets the specified arc to Destination, bool is false if no arc found
+func (v *Vertex) GetDestinationByVertex(destinationVertex *Vertex) (destinations Destination, ok bool) {
+	if v.destinations == nil {
+		return Destination{}, false
+	}
+	//idk why but doesn't work on one line?
+	destinations, ok = v.destinations[destinationVertex.ID]
 	return
 }

@@ -50,7 +50,7 @@ func Import(filename string) (g Graph, err error) {
 			g.Verticies = append(g.Verticies, make([]Vertex, 1+i-len(g.Verticies))...)
 			for ; temp < len(g.Verticies); temp++ {
 				g.Verticies[temp].ID = temp
-				g.Verticies[temp].destinations = map[int]Destinations{}
+				g.Verticies[temp].destinations = map[int]Destination{}
 			}
 		}
 		if len(f) == 1 {

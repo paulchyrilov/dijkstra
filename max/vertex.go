@@ -57,7 +57,7 @@ func (v *Vertex) RemoveArc(Destination int) {
 	delete(v.arcs, Destination)
 }*/
 
-//GetArc gets the specified arc to Destination, bool is false if no arc found
+//GetDestination gets the specified arc to Destination, bool is false if no arc found
 func (v *Vertex) GetArc(Destination int) (distance int64, ok bool) {
 	if v.arcs == nil {
 		return 0, false

@@ -53,8 +53,8 @@ func (g *Graph) HasMappedVertex(Vertex string) bool {
 
 //AddMappedArc adds a new Arc from Source to Destination, for when verticies are
 // referenced by strings.
-func (g *Graph) AddMappedArc(Source, Destination string, Distance int64) error {
-	return g.AddArc(g.AddMappedVertex(Source), g.AddMappedVertex(Destination), Distance)
+func (g *Graph) AddMappedArc(Source, Destination string, Distance int64, attributes interface{}) error {
+	return g.AddArc(g.AddMappedVertex(Source), g.AddMappedVertex(Destination), Distance, attributes)
 }
 
 func (g *Graph) HasMappedArc(Source, Destination string) bool {
@@ -72,10 +72,10 @@ func (g *Graph) HasMappedArc(Source, Destination string) bool {
 
 //AddArc is the default method for adding an arc from a Source Vertex to a
 // Destination Vertex
-func (g *Graph) AddArc(Source, Destination int, Distance int64) error {
+func (g *Graph) AddArc(Source, Destination int, Distance int64, attributes interface{}) error {
 	if len(g.Verticies) <= Source || len(g.Verticies) <= Destination {
 		return errors.New("Source/Destination not found")
 	}
-	g.Verticies[Source].AddArc(&g.Verticies[Destination], Distance)
+	g.Verticies[Source].AddArc(&g.Verticies[Destination], Distance, attributes)
 	return nil
 }
